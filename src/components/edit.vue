@@ -106,11 +106,12 @@
             </el-row>
         </el-card>
     </el-main>
-    
-    {{ user.companyList }}
-    <hr>
-
     </el-container>
+    <el-backtop :bottom="80" :right="100">
+      <div class="toTop">
+        <el-icon><ArrowUpBold /></el-icon>
+      </div>
+    </el-backtop>
 </div>
   </template>
 
@@ -183,4 +184,11 @@ const addAboutItem = ()=>{
     }
 }
 
+.toTop {
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    line-height: 45px;
+    overflow: hidden;
+  }
 </style>

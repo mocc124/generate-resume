@@ -10,25 +10,8 @@
                 </el-menu>
             </el-scrollbar>
         </el-aside>
-        <el-container>
-            <!-- <el-header style="text-align: right; font-size: 12px">
-                <div class="toolbar">
-                    <el-dropdown>
-                        <el-icon style="margin-right: 8px; margin-top: 1px">
-                            <setting />
-                        </el-icon>
-                        <template #dropdown>
-                            <el-dropdown-menu>
-                                <el-dropdown-item>View</el-dropdown-item>
-                                <el-dropdown-item>Add</el-dropdown-item>
-                                <el-dropdown-item>Delete</el-dropdown-item>
-                            </el-dropdown-menu>
-                        </template>
-                    </el-dropdown>
-                    <span>Tom</span>
-                </div>
-            </el-header> -->
-            <el-main>
+        <el-container >
+            <el-main style="overflow-x:hidden">
                 <header class="main-h">
                     <el-row :gutter="20">
                         <el-input v-model="item.data.name" placeholder="Please input" class="card-input">
@@ -53,11 +36,11 @@
                     <el-row :gutter="20">
                         <el-input
                         v-model="inputProjectName"
-                        placeholder="Please input"
+                        placeholder="请输入新增项目名"
                         class="input-with-select card-input"
                         >
                         <template #append>
-                            <el-button @click="addProject">新增项目</el-button>
+                            <el-button @click="addProject()">新增项目</el-button>
                         </template>
                         <template #prepend>
                             <el-select v-model="selectProject" filterable placeholder="请选择项目">
@@ -74,8 +57,50 @@
                 </header>
                 <main class="main-m"> 
                     <!-- {{ tableData }} -->
+                    <div v-if="tableData[0]&&selectProject" class="main-m-box">
+                        <el-row :gutter="20">
+                            <el-input v-model="tableData[0].name" placeholder="Please input" class="card-input">
+                                <template #append>项目名称</template>
+                            </el-input>
+                        </el-row>
+                        <el-row :gutter="20">
+                            <el-input v-model="tableData[0].intro" placeholder="Please input" class="card-input" ize="large">
+                                <template #append>项目简介</template>
+                            </el-input>
+                        </el-row>
+                        <el-row :gutter="20">
+                            <el-input v-model="tableData[0].time" placeholder="Please input" class="card-input" ize="large">
+                                <template #append>项目周期</template>
+                            </el-input>
+                        </el-row>
+                        <el-row :gutter="20">
+                            <el-input v-model="tableData[0].difficulty" placeholder="Please input" class="card-input">
+                                <template #append>项目难点</template>
+                            </el-input>
+                        </el-row>
+                        <el-row :gutter="20">
+                            <el-input v-model="tableData[0].content" placeholder="Please input" class="card-input" ize="large">
+                                <template #append>项目业绩</template>
+                            </el-input>
+                        </el-row>
+                        <el-row :gutter="20" style="padding:3px 14px">
+                            <span>
+                                <el-tag v-for="item in tableData[0].skill" id="bases-item"
+                                style="margin:3px"
+                                >{{ item }}</el-tag>
+                            </span>
+                            <span>
+                                <el-input 
+                                v-model="inputSkill" 
+                                style="max-width:180px;margin: 0 5px;" 
+                                placeholder="技术栈"  
+                                @change="mychange"
+                                >
+                                </el-input>
+                            </span>
+                        </el-row>
+                    </div>
                 </main>
-                <!-- {{ item }} -->
             </el-main>
         </el-container>
     </el-container>
@@ -85,7 +110,7 @@
 import { ref,reactive,onMounted,watch,toRaw} from 'vue'
 import { Menu as IconMenu, Message, Setting, } from '@element-plus/icons-vue'
 import { useStore } from "@/stores/counter";
-import type { CompanyList } from "../stores/type";
+import type { CompanyList,ProjectList } from "../stores/type";
 
 let {user} = useStore()
 type Item = {
@@ -118,7 +143,8 @@ let options = [
     name: 'Option1',
   }
 ]
-let tableData = reactive<any[]>([])
+let tableData = reactive<ProjectList[]>([])
+let inputSkill = ref('')
 
 onMounted(()=>{
     // 页面加载完成默认选中第一项公司项
@@ -134,88 +160,37 @@ const selest =(index:number = 0)=>{
     initItem(index)
 }
 const addProject = ()=>{
-    console.log(inputProjectName.value);
-}
-
-
-
-// ----------------
-let tabIndex = 2
-const editableTabsValue = ref('2')
-const editableTabs = ref([
-  {
-    title: 'Tab 1',
-    name: '1',
-    content: 'Tab 1 content',
-  },
-  {
-    title: 'Tab 2',
-    name: '2',
-    content: 'Tab 2 content',
-  },
-])
-
-const handleTabsEdit = (targetName: string, action: 'remove' | 'add') => {
-  if (action === 'add') {
-    const newTabName = `${++tabIndex}`
-    editableTabs.value.push({
-      title: 'New Tab',
-      name: newTabName,
-      content: 'New Tab content',
-    })
-    editableTabsValue.value = newTabName
-  } else if (action === 'remove') {
-    const tabs = editableTabs.value
-    let activeName = editableTabsValue.value
-    if (activeName === targetName) {
-      tabs.forEach((tab, index) => {
-        if (tab.name === targetName) {
-          const nextTab = tabs[index + 1] || tabs[index - 1]
-          if (nextTab) {
-            activeName = nextTab.name
-          }
-        }
-      })
+    if(inputProjectName.value==='') {
+        console.error("参数为空");
+        return false
     }
+    let id = Math.random().toString(36).slice(2,)
 
-    editableTabsValue.value = activeName
-    editableTabs.value = tabs.filter((tab) => tab.name !== targetName)
-  }
+    item.data.projects.push({id,name:inputProjectName.value})
+    user.projectList.push({
+        id,
+        name:inputProjectName.value,
+        skill:[],
+        time:"[]个月",
+        difficulty:"项目难点在于[]",
+        intro:"这是一个基于[]扩展的[]的综合型服务。",
+        content:"封装了、减少了、降低了、加快了..."
+    })
+    
 }
-
-
-
+const mychange = (value:string)=>{
+    tableData[0].skill.push(value)
+    inputSkill.value = ''
+}
 </script>
   
 <style scoped lang="less">
-.layout-container-demo .el-header {
-    position: relative;
-    background-color: var(--el-color-primary-light-7);
-    color: var(--el-text-color-primary);
-}
-
-.layout-container-demo .el-aside {
-    color: var(--el-text-color-primary);
-    background: var(--el-color-primary-light-8);
-}
-
-.layout-container-demo .el-menu {
-    border-right: none;
-}
-
 .layout-container-demo .el-main {
-    padding: 0;
+    padding: 0 .5rem;
 }
 
-.layout-container-demo .toolbar {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    right: 20px;
-}
 .main-h {
-    border-bottom: 1px solid #ccc;
+    box-sizing: border-box;
     .card-input {
         padding: 0 10px;
         margin: 3px;
@@ -223,10 +198,19 @@ const handleTabsEdit = (targetName: string, action: 'remove' | 'add') => {
     }
 }
 .main-m {
+    box-sizing: border-box;
     border-bottom: 1px solid #ccc;
     .card-input {
-        // padding: 0 10px;
+        padding: 0 10px;
         margin: 3px;
+        box-sizing: border-box;
+    }
+    .main-m-box {
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        padding: 5px;
         box-sizing: border-box;
     }
 }
