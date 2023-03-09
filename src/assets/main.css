@@ -1,0 +1,12 @@
+@import './base.css';
+
+
+#app,body,html,div,ul,li {
+  padding: 0;
+  margin: 0;
+  overflow: auto;
+}
+
+li {
+  list-style: none;
+}
