@@ -105,7 +105,21 @@
                 <workersVue ></workersVue>
             </el-row>
         </el-card>
+        <!-- 项目经历 -->
+        <el-card class="main-card message">
+            <template #header>
+                <div class="card-header">
+                    <span>项目经历</span>
+                    <el-button class="button">添加</el-button>
+                </div>
+            </template>
+            <el-row :gutter="20">
+                
+            </el-row>
+        </el-card>
+        后面的内容
     </el-main>
+    <!-- 返回顶部 -->
     </el-container>
     <el-backtop :bottom="80" :right="100">
       <div class="toTop">
@@ -116,7 +130,7 @@
   </template>
 
 <script setup lang='ts'>
-import { ref,reactive,onMounted ,toRaw,nextTick} from 'vue';
+import { ref,reactive,onMounted ,toRaw,nextTick } from 'vue';
 import { useStore } from "@/stores/counter";
 import { useRouter } from "vue-router";
 import workersVue from "./workers.vue";
