@@ -7,6 +7,7 @@ export interface Link {
 export interface Base {
 	name: string;
 	data: string[];
+	edit?: boolean
 }
 
 export interface Project {
