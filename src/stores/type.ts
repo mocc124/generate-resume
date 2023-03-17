@@ -18,7 +18,7 @@ export interface CompanyList {
 	name: string;
 	time: string;
 	intro: string;
-	projects: Project[];
+	projects?: Project[];
 	content: string;
 }
 
@@ -27,9 +27,9 @@ export interface ProjectList {
 	name: string;
 	skill: string[];
 	time: string;
-	difficulty: string;
+	difficulty: string[];
 	intro: string;
-	content: string;
+	content: string[];
 }
 
 export interface RootObject {
