@@ -114,7 +114,7 @@
                 </div>
             </template>
             <el-row :gutter="20">
-                
+                <projectsVue :data="user.projectList"></projectsVue>
             </el-row>
         </el-card>
         后面的内容
@@ -134,6 +134,7 @@ import { ref,reactive,onMounted ,toRaw,nextTick } from 'vue';
 import { useStore } from "@/stores/counter";
 import { useRouter } from "vue-router";
 import workersVue from "./workers.vue";
+import projectsVue from "./projects.vue";
 
 const router = useRouter()
 let { user } = useStore()
@@ -142,31 +143,38 @@ const inputBases = ref('')
 const goBack = ()=>{
     router.push({name:"view"})
 }
-// 列表项操作
+// 删除基础技能列表项
 const deleteRow = (index: number) => {
   user.bases.splice(index, 1)
 }
+// 编辑基础技能列表项
 const editRow = (e:HTMLElement,index:number)=>{
+    // 移除其它项edit，当前项edit置为true
     user.bases.forEach((item,i)=>{
         i===index?user.bases[index].edit = true:delete user.bases[i].edit
     }) 
 }
+// 编辑完成保存基础技能列表项
 const saveRow = (index: number)=>{
     delete user.bases[index].edit  
 }
+// 添加基础技能
 const onAddItem = () => {
     user.bases.push({
         name:"xxx",
         data:[]
     })
 }
+// 基础技能项回车保存
 const mychange =(index:number)=>{
     user.bases[index].data.push(inputBases.value)
     inputBases.value = ''
 }
+// 新增个人总结项
 const addAboutItem = ()=>{
     user.about.push('')
 }
+
 </script>
 
 <style scoped lang="less">
@@ -204,5 +212,17 @@ const addAboutItem = ()=>{
     text-align: center;
     line-height: 45px;
     overflow: hidden;
-  }
+}
+.projects-tabs {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    .el-tabs__content {
+        padding: 32px;
+        color: #6b778c;
+        background-color: red;
+        font-size: 32px;
+        font-weight: 600;
+    }
+}
 </style>
